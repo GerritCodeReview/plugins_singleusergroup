@@ -1,0 +1,191 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "AAAGPn///tc\u003d",
+        "filename": "src/main/java/com/googlesource/gerrit/plugins/singleusergroup/SingleUserGroup.java",
+        "patchSetId": 1
+      },
+      "lineNbr": 66,
+      "author": {
+        "id": 1002517
+      },
+      "writtenOn": "2012-06-05T18:31:24Z",
+      "side": 1,
+      "message": "not needed",
+      "revId": "1cec3170ee3fcd3196ae9da01a6375ceafa8c146",
+      "serverId": "173816e5-2b9a-37c3-8a2e-48639d4f1153",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "AAAGPn///tI\u003d",
+        "filename": "src/main/java/com/googlesource/gerrit/plugins/singleusergroup/SingleUserGroup.java",
+        "patchSetId": 1
+      },
+      "lineNbr": 91,
+      "author": {
+        "id": 1002517
+      },
+      "writtenOn": "2012-06-05T18:31:24Z",
+      "side": 1,
+      "message": "This is a ListGroupMembership() of a single AccountGroup.UUID. If you can\u0027t use that, update the getKnownGroups() to return the singleton set of the AccountGroup.UUID",
+      "revId": "1cec3170ee3fcd3196ae9da01a6375ceafa8c146",
+      "serverId": "173816e5-2b9a-37c3-8a2e-48639d4f1153",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "AAAGPn///tQ\u003d",
+        "filename": "src/main/java/com/googlesource/gerrit/plugins/singleusergroup/SingleUserGroup.java",
+        "patchSetId": 1
+      },
+      "lineNbr": 117,
+      "author": {
+        "id": 1002517
+      },
+      "writtenOn": "2012-06-05T18:31:24Z",
+      "side": 1,
+      "message": "if (state !\u003d null \u0026\u0026 state.getUserName() !\u003d null)\n\nseems more correct",
+      "revId": "1cec3170ee3fcd3196ae9da01a6375ceafa8c146",
+      "serverId": "173816e5-2b9a-37c3-8a2e-48639d4f1153",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "AAAGPn///tE\u003d",
+        "filename": "src/main/java/com/googlesource/gerrit/plugins/singleusergroup/SingleUserGroup.java",
+        "patchSetId": 1
+      },
+      "lineNbr": 144,
+      "author": {
+        "id": 1002517
+      },
+      "writtenOn": "2012-06-05T18:31:24Z",
+      "side": 1,
+      "message": "You should still return exact matches when the length is less than 3",
+      "revId": "1cec3170ee3fcd3196ae9da01a6375ceafa8c146",
+      "serverId": "173816e5-2b9a-37c3-8a2e-48639d4f1153",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "AAAGPn///r0\u003d",
+        "filename": "src/main/java/com/googlesource/gerrit/plugins/singleusergroup/SingleUserGroup.java",
+        "patchSetId": 1
+      },
+      "lineNbr": 157,
+      "author": {
+        "id": 1002517
+      },
+      "writtenOn": "2012-06-05T18:31:24Z",
+      "side": 1,
+      "message": "do you need to poke the DB here? Seems like ctl.canSee(id) should handle this for you.",
+      "revId": "1cec3170ee3fcd3196ae9da01a6375ceafa8c146",
+      "serverId": "173816e5-2b9a-37c3-8a2e-48639d4f1153",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "AAAGPn///sQ\u003d",
+        "filename": "src/main/java/com/googlesource/gerrit/plugins/singleusergroup/SingleUserGroup.java",
+        "patchSetId": 1
+      },
+      "lineNbr": 159,
+      "author": {
+        "id": 1002517
+      },
+      "writtenOn": "2012-06-05T18:31:24Z",
+      "side": 1,
+      "message": "either you should always return here, or never return here. the current behavior is peculiar. if you don\u0027t return, make sure you add the id to the ids set.",
+      "revId": "1cec3170ee3fcd3196ae9da01a6375ceafa8c146",
+      "serverId": "173816e5-2b9a-37c3-8a2e-48639d4f1153",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "AAAGPn///sA\u003d",
+        "filename": "src/main/java/com/googlesource/gerrit/plugins/singleusergroup/SingleUserGroup.java",
+        "patchSetId": 1
+      },
+      "lineNbr": 176,
+      "author": {
+        "id": 1002517
+      },
+      "writtenOn": "2012-06-05T18:31:24Z",
+      "side": 1,
+      "message": "why short circuit when the max is hit? we don\u0027t do this in the other backends.  you probably always want to include the \"exact matches\" in the output too.",
+      "revId": "1cec3170ee3fcd3196ae9da01a6375ceafa8c146",
+      "serverId": "173816e5-2b9a-37c3-8a2e-48639d4f1153",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "AAAGPn///r4\u003d",
+        "filename": "src/main/java/com/googlesource/gerrit/plugins/singleusergroup/SingleUserGroup.java",
+        "patchSetId": 1
+      },
+      "lineNbr": 185,
+      "author": {
+        "id": 1002517
+      },
+      "writtenOn": "2012-06-05T18:31:24Z",
+      "side": 1,
+      "message": "you do ctl.canSee() every time you call add(). consider combining the functionality.",
+      "revId": "1cec3170ee3fcd3196ae9da01a6375ceafa8c146",
+      "serverId": "173816e5-2b9a-37c3-8a2e-48639d4f1153",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "AAAGPn///sI\u003d",
+        "filename": "src/main/java/com/googlesource/gerrit/plugins/singleusergroup/SingleUserGroup.java",
+        "patchSetId": 1
+      },
+      "lineNbr": 205,
+      "author": {
+        "id": 1002517
+      },
+      "writtenOn": "2012-06-05T18:31:24Z",
+      "side": 1,
+      "message": "nit: weird line break",
+      "revId": "1cec3170ee3fcd3196ae9da01a6375ceafa8c146",
+      "serverId": "173816e5-2b9a-37c3-8a2e-48639d4f1153",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "AAAGPn///tY\u003d",
+        "filename": "src/main/java/com/googlesource/gerrit/plugins/singleusergroup/SingleUserGroup.java",
+        "patchSetId": 1
+      },
+      "lineNbr": 255,
+      "author": {
+        "id": 1002517
+      },
+      "writtenOn": "2012-06-05T18:31:24Z",
+      "side": 1,
+      "message": "couldn\u0027t this collide with an existing group? you may want to add the NAME_PREFIX here as well.",
+      "revId": "1cec3170ee3fcd3196ae9da01a6375ceafa8c146",
+      "serverId": "173816e5-2b9a-37c3-8a2e-48639d4f1153",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "AAAGPn///tU\u003d",
+        "filename": "src/main/java/com/googlesource/gerrit/plugins/singleusergroup/SingleUserGroup.java",
+        "patchSetId": 1
+      },
+      "lineNbr": 259,
+      "author": {
+        "id": 1002517
+      },
+      "writtenOn": "2012-06-05T18:31:24Z",
+      "side": 1,
+      "message": "it seems like getUserName() will never be null",
+      "revId": "1cec3170ee3fcd3196ae9da01a6375ceafa8c146",
+      "serverId": "173816e5-2b9a-37c3-8a2e-48639d4f1153",
+      "unresolved": false
+    }
+  ]
+}
