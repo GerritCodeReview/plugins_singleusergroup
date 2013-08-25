@@ -33,6 +33,7 @@ import com.google.gerrit.server.account.AccountState;
 import com.google.gerrit.server.account.GroupBackend;
 import com.google.gerrit.server.account.GroupMembership;
 import com.google.gerrit.server.account.ListGroupMembership;
+import com.google.gerrit.server.project.ProjectControl;
 import com.google.gwtorm.server.OrmException;
 import com.google.gwtorm.server.SchemaFactory;
 import com.google.inject.AbstractModule;
@@ -46,6 +47,8 @@ import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
 import java.util.Set;
+
+import javax.annotation.Nullable;
 
 /**
  * Makes a group out of each user.
@@ -102,7 +105,7 @@ public class SingleUserGroup implements GroupBackend {
   @Override
   public GroupDescription.Basic get(final AccountGroup.UUID uuid) {
     String ident = username(uuid);
-    AccountState state;
+    final AccountState state;
     if (ident.matches(ACCOUNT_ID_PATTERN)) {
       state = accountCache.get(new Account.Id(Integer.parseInt(ident)));
     } else if (ident.matches(Account.USER_NAME_PATTERN)) {
@@ -124,8 +127,15 @@ public class SingleUserGroup implements GroupBackend {
         }
 
         @Override
-        public boolean isVisibleToAll() {
-          return false;
+        @Nullable
+        public String getEmailAddress() {
+          return state.getAccount().getPreferredEmail();
+        }
+
+        @Override
+        @Nullable
+        public String getUrl() {
+          return null;
         }
       };
     }
@@ -133,7 +143,8 @@ public class SingleUserGroup implements GroupBackend {
   }
 
   @Override
-  public Collection<GroupReference> suggest(String name) {
+  public Collection<GroupReference> suggest(String name,
+      @Nullable ProjectControl project) {
     if (name.startsWith(NAME_PREFIX)) {
       name = name.substring(NAME_PREFIX.length());
     } else if (name.startsWith(ACCOUNT_PREFIX)) {
