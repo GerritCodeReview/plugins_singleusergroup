@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "9ee2b019_ecdfcb84",
+        "filename": "src/main/java/com/googlesource/gerrit/plugins/singleusergroup/SingleUserGroup.java",
+        "patchSetId": 1
+      },
+      "lineNbr": 51,
+      "author": {
+        "id": 1011123
+      },
+      "writtenOn": "2013-10-23T02:25:57Z",
+      "side": 1,
+      "message": "Gerrit now has its own implementation of Nullable; that should be used instead.",
+      "revId": "7bf1657dd201e3d6400f96c4314fd5cc09f4428f",
+      "serverId": "173816e5-2b9a-37c3-8a2e-48639d4f1153",
+      "unresolved": false
+    }
+  ]
+}
