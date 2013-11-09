@@ -16,9 +16,11 @@ package com.googlesource.gerrit.plugins.singleusergroup;
 
 import static com.google.common.base.Preconditions.checkArgument;
 
+import com.google.common.base.Strings;
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Sets;
+import com.google.gerrit.common.Nullable;
 import com.google.gerrit.common.data.GroupDescription;
 import com.google.gerrit.common.data.GroupReference;
 import com.google.gerrit.extensions.registration.DynamicSet;
@@ -33,6 +35,7 @@ import com.google.gerrit.server.account.AccountState;
 import com.google.gerrit.server.account.GroupBackend;
 import com.google.gerrit.server.account.GroupMembership;
 import com.google.gerrit.server.account.ListGroupMembership;
+import com.google.gerrit.server.project.ProjectControl;
 import com.google.gwtorm.server.OrmException;
 import com.google.gwtorm.server.SchemaFactory;
 import com.google.inject.AbstractModule;
@@ -74,14 +77,17 @@ public class SingleUserGroup implements GroupBackend {
   private final SchemaFactory<ReviewDb> schemaFactory;
   private final AccountCache accountCache;
   private final AccountControl.Factory accountControlFactory;
+  private final IdentifiedUser.GenericFactory userFactory;
 
   @Inject
   SingleUserGroup(SchemaFactory<ReviewDb> schemaFactory,
       AccountCache accountCache,
-      AccountControl.Factory accountControlFactory) {
+      AccountControl.Factory accountControlFactory,
+      IdentifiedUser.GenericFactory userFactory) {
     this.schemaFactory = schemaFactory;
     this.accountCache = accountCache;
     this.accountControlFactory = accountControlFactory;
+    this.userFactory = userFactory;
   }
 
   @Override
@@ -112,6 +118,8 @@ public class SingleUserGroup implements GroupBackend {
     }
     if (state != null) {
       final String name = nameOf(uuid, state);
+      final String email =
+          Strings.emptyToNull(state.getAccount().getPreferredEmail());
       return new GroupDescription.Basic() {
         @Override
         public AccountGroup.UUID getGroupUUID() {
@@ -124,8 +132,15 @@ public class SingleUserGroup implements GroupBackend {
         }
 
         @Override
-        public boolean isVisibleToAll() {
-          return false;
+        @Nullable
+        public String getEmailAddress() {
+          return email;
+        }
+
+        @Override
+        @Nullable
+        public String getUrl() {
+          return null;
         }
       };
     }
@@ -133,7 +148,9 @@ public class SingleUserGroup implements GroupBackend {
   }
 
   @Override
-  public Collection<GroupReference> suggest(String name) {
+  public Collection<GroupReference> suggest(
+      String name,
+      @Nullable ProjectControl project) {
     if (name.startsWith(NAME_PREFIX)) {
       name = name.substring(NAME_PREFIX.length());
     } else if (name.startsWith(ACCOUNT_PREFIX)) {
@@ -153,7 +170,7 @@ public class SingleUserGroup implements GroupBackend {
         if (name.matches(ACCOUNT_ID_PATTERN)) {
           Account.Id id = new Account.Id(Integer.parseInt(name));
           if (db.accounts().get(id) != null) {
-            add(matches, ids, ctl, id);
+            add(matches, ids, ctl, project, id);
             return matches;
           }
         }
@@ -166,7 +183,7 @@ public class SingleUserGroup implements GroupBackend {
             if (!e.getSchemeRest().startsWith(a)) {
               break;
             }
-            add(matches, ids, ctl, e.getAccountId());
+            add(matches, ids, ctl, project, e.getAccountId());
           }
         }
 
@@ -174,14 +191,14 @@ public class SingleUserGroup implements GroupBackend {
           if (!p.getFullName().startsWith(a)) {
             break;
           }
-          add(matches, ids, ctl, p.getId());
+          add(matches, ids, ctl, project, p.getId());
         }
 
         for (Account p : db.accounts().suggestByPreferredEmail(a, b, MAX)) {
           if (!p.getPreferredEmail().startsWith(a)) {
             break;
           }
-          add(matches, ids, ctl, p.getId());
+          add(matches, ids, ctl, project, p.getId());
         }
 
         for (AccountExternalId e : db.accountExternalIds()
@@ -189,7 +206,7 @@ public class SingleUserGroup implements GroupBackend {
           if (!e.getEmailAddress().startsWith(a)) {
             break;
           }
-          add(matches, ids, ctl, e.getAccountId());
+          add(matches, ids, ctl, project, e.getAccountId());
         }
 
         return matches;
@@ -208,13 +225,13 @@ public class SingleUserGroup implements GroupBackend {
   }
 
   private void add(List<GroupReference> matches, Set<Account.Id> ids,
-      AccountControl ctl, Account.Id id) {
+      AccountControl ctl, @Nullable ProjectControl project, Account.Id id) {
     if (!ids.add(id) || !ctl.canSee(id)) {
       return;
     }
 
     AccountState state = accountCache.get(id);
-    if (state == null) {
+    if (state == null || !isVisible(project, id)) {
       return;
     }
 
@@ -225,6 +242,11 @@ public class SingleUserGroup implements GroupBackend {
       uuid = uuid(id);
     }
     matches.add(new GroupReference(uuid, nameOf(uuid, state)));
+  }
+
+  private boolean isVisible(@Nullable ProjectControl project, Account.Id id) {
+    return project == null
+        || project.forUser(userFactory.create(id)).isVisible();
   }
 
   private static String username(AccountGroup.UUID uuid) {
