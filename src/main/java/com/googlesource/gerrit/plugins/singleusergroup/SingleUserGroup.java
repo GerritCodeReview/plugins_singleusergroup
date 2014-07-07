@@ -27,7 +27,10 @@ import com.google.gerrit.extensions.registration.DynamicSet;
 import com.google.gerrit.reviewdb.client.Account;
 import com.google.gerrit.reviewdb.client.AccountExternalId;
 import com.google.gerrit.reviewdb.client.AccountGroup;
+import com.google.gerrit.reviewdb.client.Project;
+import com.google.gerrit.reviewdb.client.AccountGroup.UUID;
 import com.google.gerrit.reviewdb.server.ReviewDb;
+import com.google.gerrit.server.CurrentUser;
 import com.google.gerrit.server.IdentifiedUser;
 import com.google.gerrit.server.account.AccountCache;
 import com.google.gerrit.server.account.AccountControl;
@@ -292,5 +295,27 @@ public class SingleUserGroup implements GroupBackend {
       buf.insert(0, NAME_PREFIX);
     }
     return buf.toString();
+  }
+
+  @Override
+  public List<Account.Id> loadMembers(AccountGroup.UUID uuid ) {
+    String ident = username(uuid);
+    AccountState state;
+    if (ident.matches(ACCOUNT_ID_PATTERN)) {
+      return Lists.newArrayList(new Account.Id(Integer.parseInt(ident)));
+    }
+    if (ident.matches(Account.USER_NAME_PATTERN)) {
+      state = accountCache.getByUsername(ident);
+      if (state != null) {
+        return Lists.newArrayList(state.getAccount().getId());
+      }
+    }
+    return Collections.emptyList();
+  }
+
+  @Override
+  public List<AccountGroup.UUID> loadIncludes(AccountGroup.UUID uuid,
+      @Nullable Project.NameKey nameKey) {
+    return Collections.emptyList();
   }
 }
