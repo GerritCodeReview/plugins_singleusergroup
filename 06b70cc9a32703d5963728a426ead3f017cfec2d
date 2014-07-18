@@ -25,6 +25,24 @@
     },
     {
       "key": {
+        "uuid": "990818db_1ab67d13",
+        "filename": "src/main/java/com/googlesource/gerrit/plugins/singleusergroup/SingleUserGroup.java",
+        "patchSetId": 5
+      },
+      "lineNbr": 301,
+      "author": {
+        "id": 1010015
+      },
+      "writtenOn": "2014-07-18T12:41:24Z",
+      "side": 1,
+      "message": "Yes.\nDone",
+      "parentUuid": "9933b87e_c2e16234",
+      "revId": "06b70cc9a32703d5963728a426ead3f017cfec2d",
+      "serverId": "173816e5-2b9a-37c3-8a2e-48639d4f1153",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "f9fe74bb_c5d73a5e",
         "filename": "src/main/java/com/googlesource/gerrit/plugins/singleusergroup/SingleUserGroup.java",
         "patchSetId": 5
@@ -48,6 +66,24 @@
     },
     {
       "key": {
+        "uuid": "19f3481c_3ea089bd",
+        "filename": "src/main/java/com/googlesource/gerrit/plugins/singleusergroup/SingleUserGroup.java",
+        "patchSetId": 5
+      },
+      "lineNbr": 305,
+      "author": {
+        "id": 1010015
+      },
+      "writtenOn": "2014-07-18T12:41:24Z",
+      "side": 1,
+      "message": "does not need that becasue for SingleUserGroup the  uuid only support username and Account.Id .",
+      "parentUuid": "f9fe74bb_c5d73a5e",
+      "revId": "06b70cc9a32703d5963728a426ead3f017cfec2d",
+      "serverId": "173816e5-2b9a-37c3-8a2e-48639d4f1153",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "9933b87e_62e73647",
         "filename": "src/main/java/com/googlesource/gerrit/plugins/singleusergroup/SingleUserGroup.java",
         "patchSetId": 5
@@ -65,6 +101,24 @@
         "endLine": 317,
         "endChar": 15
       },
+      "revId": "06b70cc9a32703d5963728a426ead3f017cfec2d",
+      "serverId": "173816e5-2b9a-37c3-8a2e-48639d4f1153",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "19f3481c_5ec0f55e",
+        "filename": "src/main/java/com/googlesource/gerrit/plugins/singleusergroup/SingleUserGroup.java",
+        "patchSetId": 5
+      },
+      "lineNbr": 317,
+      "author": {
+        "id": 1010015
+      },
+      "writtenOn": "2014-07-18T12:41:24Z",
+      "side": 1,
+      "message": "it does not support nested group",
+      "parentUuid": "9933b87e_62e73647",
       "revId": "06b70cc9a32703d5963728a426ead3f017cfec2d",
       "serverId": "173816e5-2b9a-37c3-8a2e-48639d4f1153",
       "unresolved": false
