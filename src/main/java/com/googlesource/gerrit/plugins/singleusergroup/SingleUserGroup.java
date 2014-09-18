@@ -29,6 +29,7 @@ import com.google.gerrit.reviewdb.client.AccountExternalId;
 import com.google.gerrit.reviewdb.client.AccountGroup;
 import com.google.gerrit.reviewdb.server.ReviewDb;
 import com.google.gerrit.server.IdentifiedUser;
+import com.google.gerrit.server.account.AbstractGroupBackend;
 import com.google.gerrit.server.account.AccountCache;
 import com.google.gerrit.server.account.AccountControl;
 import com.google.gerrit.server.account.AccountState;
@@ -57,7 +58,7 @@ import java.util.Set;
  * account. A user can only be used as a group if it has a username.
  */
 @Singleton
-public class SingleUserGroup implements GroupBackend {
+public class SingleUserGroup extends AbstractGroupBackend {
   private static final Logger log =
       LoggerFactory.getLogger(SingleUserGroup.class);
 
