@@ -27,6 +27,7 @@ import com.google.gerrit.extensions.registration.DynamicSet;
 import com.google.gerrit.reviewdb.client.Account;
 import com.google.gerrit.reviewdb.client.AccountExternalId;
 import com.google.gerrit.reviewdb.client.AccountGroup;
+import com.google.gerrit.reviewdb.client.AccountGroup.UUID;
 import com.google.gerrit.reviewdb.server.ReviewDb;
 import com.google.gerrit.server.IdentifiedUser;
 import com.google.gerrit.server.account.AccountCache;
@@ -292,5 +293,10 @@ public class SingleUserGroup implements GroupBackend {
       buf.insert(0, NAME_PREFIX);
     }
     return buf.toString();
+  }
+
+  @Override
+  public boolean isVisibleTo(AccountGroup.UUID uuid, IdentifiedUser user) {
+    return false;
   }
 }
