@@ -166,8 +166,7 @@ public class SingleUserGroup extends AbstractGroupBackend {
       List<GroupReference> matches = Lists.newArrayListWithCapacity(MAX);
       String a = name;
       String b = end(a);
-      ReviewDb db = schemaFactory.open();
-      try {
+      try (ReviewDb db = schemaFactory.open()) {
         if (name.matches(ACCOUNT_ID_PATTERN)) {
           Account.Id id = new Account.Id(Integer.parseInt(name));
           if (db.accounts().get(id) != null) {
@@ -211,8 +210,6 @@ public class SingleUserGroup extends AbstractGroupBackend {
         }
 
         return matches;
-      } finally {
-        db.close();
       }
     } catch (OrmException err) {
       log.warn("Cannot suggest users", err);
