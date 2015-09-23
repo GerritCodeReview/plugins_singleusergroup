@@ -229,7 +229,7 @@ public class SingleUserGroup extends AbstractGroupBackend {
     }
 
     AccountState state = accountCache.get(id);
-    if (state == null || !isVisible(project, id)) {
+    if (state == null){
       return;
     }
 
@@ -240,11 +240,6 @@ public class SingleUserGroup extends AbstractGroupBackend {
       uuid = uuid(id);
     }
     matches.add(new GroupReference(uuid, nameOf(uuid, state)));
-  }
-
-  private boolean isVisible(@Nullable ProjectControl project, Account.Id id) {
-    return project == null
-        || project.forUser(userFactory.create(id)).isVisible();
   }
 
   private static String username(AccountGroup.UUID uuid) {
