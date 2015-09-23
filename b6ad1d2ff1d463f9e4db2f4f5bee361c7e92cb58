@@ -1,0 +1,27 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "49ab53f0_acd6232f",
+        "filename": "src/main/java/com/googlesource/gerrit/plugins/singleusergroup/SingleUserGroup.java",
+        "patchSetId": 1
+      },
+      "lineNbr": 248,
+      "author": {
+        "id": 1012987
+      },
+      "writtenOn": "2015-09-23T18:57:38Z",
+      "side": 1,
+      "message": "this method is not used anymore, you can remove it",
+      "range": {
+        "startLine": 245,
+        "startChar": 2,
+        "endLine": 248,
+        "endChar": 3
+      },
+      "revId": "b6ad1d2ff1d463f9e4db2f4f5bee361c7e92cb58",
+      "serverId": "173816e5-2b9a-37c3-8a2e-48639d4f1153",
+      "unresolved": false
+    }
+  ]
+}
