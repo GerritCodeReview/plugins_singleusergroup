@@ -229,7 +229,7 @@ public class SingleUserGroup extends AbstractGroupBackend {
     }
 
     AccountState state = accountCache.get(id);
-    if (state == null || !isVisible(project, id)) {
+    if (state == null){
       return;
     }
 
