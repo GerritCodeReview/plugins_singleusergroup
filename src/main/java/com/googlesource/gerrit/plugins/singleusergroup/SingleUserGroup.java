@@ -78,17 +78,13 @@ public class SingleUserGroup extends AbstractGroupBackend {
   private final SchemaFactory<ReviewDb> schemaFactory;
   private final AccountCache accountCache;
   private final AccountControl.Factory accountControlFactory;
-  private final IdentifiedUser.GenericFactory userFactory;
-
   @Inject
   SingleUserGroup(SchemaFactory<ReviewDb> schemaFactory,
       AccountCache accountCache,
-      AccountControl.Factory accountControlFactory,
-      IdentifiedUser.GenericFactory userFactory) {
+      AccountControl.Factory accountControlFactory) {
     this.schemaFactory = schemaFactory;
     this.accountCache = accountCache;
     this.accountControlFactory = accountControlFactory;
-    this.userFactory = userFactory;
   }
 
   @Override
@@ -171,7 +167,7 @@ public class SingleUserGroup extends AbstractGroupBackend {
         if (name.matches(ACCOUNT_ID_PATTERN)) {
           Account.Id id = new Account.Id(Integer.parseInt(name));
           if (db.accounts().get(id) != null) {
-            add(matches, ids, ctl, project, id);
+            add(matches, ids, ctl, id);
             return matches;
           }
         }
@@ -184,7 +180,7 @@ public class SingleUserGroup extends AbstractGroupBackend {
             if (!e.getSchemeRest().startsWith(a)) {
               break;
             }
-            add(matches, ids, ctl, project, e.getAccountId());
+            add(matches, ids, ctl, e.getAccountId());
           }
         }
 
@@ -192,14 +188,14 @@ public class SingleUserGroup extends AbstractGroupBackend {
           if (!p.getFullName().startsWith(a)) {
             break;
           }
-          add(matches, ids, ctl, project, p.getId());
+          add(matches, ids, ctl, p.getId());
         }
 
         for (Account p : db.accounts().suggestByPreferredEmail(a, b, MAX)) {
           if (!p.getPreferredEmail().startsWith(a)) {
             break;
           }
-          add(matches, ids, ctl, project, p.getId());
+          add(matches, ids, ctl, p.getId());
         }
 
         for (AccountExternalId e : db.accountExternalIds()
@@ -207,7 +203,7 @@ public class SingleUserGroup extends AbstractGroupBackend {
           if (!e.getEmailAddress().startsWith(a)) {
             break;
           }
-          add(matches, ids, ctl, project, e.getAccountId());
+          add(matches, ids, ctl, e.getAccountId());
         }
 
         return matches;
@@ -226,13 +222,13 @@ public class SingleUserGroup extends AbstractGroupBackend {
   }
 
   private void add(List<GroupReference> matches, Set<Account.Id> ids,
-      AccountControl ctl, @Nullable ProjectControl project, Account.Id id) {
+      AccountControl ctl, Account.Id id) {
     if (!ids.add(id) || !ctl.canSee(id)) {
       return;
     }
 
     AccountState state = accountCache.get(id);
-    if (state == null || !isVisible(project, id)) {
+    if (state == null) {
       return;
     }
 
@@ -243,11 +239,6 @@ public class SingleUserGroup extends AbstractGroupBackend {
       uuid = uuid(id);
     }
     matches.add(new GroupReference(uuid, nameOf(uuid, state)));
-  }
-
-  private boolean isVisible(@Nullable ProjectControl project, Account.Id id) {
-    return project == null
-        || project.forUser(userFactory.create(id)).isVisible();
   }
 
   private static String username(AccountGroup.UUID uuid) {
