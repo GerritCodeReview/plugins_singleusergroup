@@ -16,6 +16,7 @@ package com.googlesource.gerrit.plugins.singleusergroup;
 
 import static com.google.common.base.Preconditions.checkArgument;
 
+import com.google.common.base.Function;
 import com.google.common.base.Strings;
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.Lists;
@@ -35,7 +36,11 @@ import com.google.gerrit.server.account.AccountState;
 import com.google.gerrit.server.account.GroupBackend;
 import com.google.gerrit.server.account.GroupMembership;
 import com.google.gerrit.server.account.ListGroupMembership;
+import com.google.gerrit.server.index.account.AccountIndexCollection;
 import com.google.gerrit.server.project.ProjectControl;
+import com.google.gerrit.server.query.QueryParseException;
+import com.google.gerrit.server.query.account.AccountQueryBuilder;
+import com.google.gerrit.server.query.account.AccountQueryProcessor;
 import com.google.gwtorm.server.OrmException;
 import com.google.gwtorm.server.SchemaFactory;
 import com.google.inject.AbstractModule;
@@ -78,13 +83,23 @@ public class SingleUserGroup extends AbstractGroupBackend {
   private final SchemaFactory<ReviewDb> schemaFactory;
   private final AccountCache accountCache;
   private final AccountControl.Factory accountControlFactory;
+  private final AccountIndexCollection accountIndexes;
+  private final AccountQueryBuilder queryBuilder;
+  private final AccountQueryProcessor queryProcessor;
+
   @Inject
   SingleUserGroup(SchemaFactory<ReviewDb> schemaFactory,
       AccountCache accountCache,
-      AccountControl.Factory accountControlFactory) {
+      AccountControl.Factory accountControlFactory,
+      AccountIndexCollection accountIndexes,
+      AccountQueryBuilder queryBuilder,
+      AccountQueryProcessor queryProcessor) {
     this.schemaFactory = schemaFactory;
     this.accountCache = accountCache;
     this.accountControlFactory = accountControlFactory;
+    this.accountIndexes = accountIndexes;
+    this.queryBuilder = queryBuilder;
+    this.queryProcessor = queryProcessor;
   }
 
   @Override
@@ -148,6 +163,39 @@ public class SingleUserGroup extends AbstractGroupBackend {
   public Collection<GroupReference> suggest(
       String name,
       @Nullable ProjectControl project) {
+    if (accountIndexes.getSearchIndex() != null) {
+      return suggestFromIndex(name);
+    }
+
+    return suggestFromDb(name);
+  }
+
+  private Collection<GroupReference> suggestFromIndex(String name) {
+    try {
+      return Lists
+          .transform(
+              queryProcessor
+                  .setLimit(MAX)
+                  .query(queryBuilder.defaultQuery(name)).entities(),
+              new Function<AccountState, GroupReference>() {
+                @Override
+                public GroupReference apply(AccountState state) {
+                  AccountGroup.UUID uuid;
+                  if (state.getUserName() != null) {
+                    uuid = uuid(state.getUserName());
+                  } else {
+                    uuid = uuid(state.getAccount().getId());
+                  }
+                  return new GroupReference(uuid, nameOf(uuid, state));
+                }
+              });
+    } catch (OrmException | QueryParseException err) {
+      log.warn("Cannot suggest users", err);
+      return Collections.emptyList();
+    }
+  }
+
+  private Collection<GroupReference> suggestFromDb(String name) {
     if (name.startsWith(NAME_PREFIX)) {
       name = name.substring(NAME_PREFIX.length());
     } else if (name.startsWith(ACCOUNT_PREFIX)) {
