@@ -25,24 +25,19 @@ import com.google.gerrit.common.data.GroupDescription;
 import com.google.gerrit.common.data.GroupReference;
 import com.google.gerrit.extensions.registration.DynamicSet;
 import com.google.gerrit.reviewdb.client.Account;
-import com.google.gerrit.reviewdb.client.AccountExternalId;
 import com.google.gerrit.reviewdb.client.AccountGroup;
-import com.google.gerrit.reviewdb.server.ReviewDb;
 import com.google.gerrit.server.IdentifiedUser;
 import com.google.gerrit.server.account.AbstractGroupBackend;
 import com.google.gerrit.server.account.AccountCache;
-import com.google.gerrit.server.account.AccountControl;
 import com.google.gerrit.server.account.AccountState;
 import com.google.gerrit.server.account.GroupBackend;
 import com.google.gerrit.server.account.GroupMembership;
 import com.google.gerrit.server.account.ListGroupMembership;
-import com.google.gerrit.server.index.account.AccountIndexCollection;
 import com.google.gerrit.server.project.ProjectControl;
 import com.google.gerrit.server.query.QueryParseException;
 import com.google.gerrit.server.query.account.AccountQueryBuilder;
 import com.google.gerrit.server.query.account.AccountQueryProcessor;
 import com.google.gwtorm.server.OrmException;
-import com.google.gwtorm.server.SchemaFactory;
 import com.google.inject.AbstractModule;
 import com.google.inject.Inject;
 import com.google.inject.Singleton;
@@ -52,9 +47,6 @@ import org.slf4j.LoggerFactory;
 
 import java.util.Collection;
 import java.util.Collections;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
 
 /**
  * Makes a group out of each user.
@@ -80,24 +72,15 @@ public class SingleUserGroup extends AbstractGroupBackend {
     }
   }
 
-  private final SchemaFactory<ReviewDb> schemaFactory;
   private final AccountCache accountCache;
-  private final AccountControl.Factory accountControlFactory;
-  private final AccountIndexCollection accountIndexes;
   private final AccountQueryBuilder queryBuilder;
   private final AccountQueryProcessor queryProcessor;
 
   @Inject
-  SingleUserGroup(SchemaFactory<ReviewDb> schemaFactory,
-      AccountCache accountCache,
-      AccountControl.Factory accountControlFactory,
-      AccountIndexCollection accountIndexes,
+  SingleUserGroup(AccountCache accountCache,
       AccountQueryBuilder queryBuilder,
       AccountQueryProcessor queryProcessor) {
-    this.schemaFactory = schemaFactory;
     this.accountCache = accountCache;
-    this.accountControlFactory = accountControlFactory;
-    this.accountIndexes = accountIndexes;
     this.queryBuilder = queryBuilder;
     this.queryProcessor = queryProcessor;
   }
@@ -163,14 +146,6 @@ public class SingleUserGroup extends AbstractGroupBackend {
   public Collection<GroupReference> suggest(
       String name,
       @Nullable ProjectControl project) {
-    if (accountIndexes.getSearchIndex() != null) {
-      return suggestFromIndex(name);
-    }
-
-    return suggestFromDb(name);
-  }
-
-  private Collection<GroupReference> suggestFromIndex(String name) {
     try {
       return Lists
           .transform(
@@ -193,97 +168,6 @@ public class SingleUserGroup extends AbstractGroupBackend {
       log.warn("Cannot suggest users", err);
       return Collections.emptyList();
     }
-  }
-
-  private Collection<GroupReference> suggestFromDb(String name) {
-    if (name.startsWith(NAME_PREFIX)) {
-      name = name.substring(NAME_PREFIX.length());
-    } else if (name.startsWith(ACCOUNT_PREFIX)) {
-      name = name.substring(ACCOUNT_PREFIX.length());
-    }
-    if (name.isEmpty()) {
-      return Collections.emptyList();
-    }
-    try {
-      AccountControl ctl = accountControlFactory.get();
-      Set<Account.Id> ids = new HashSet<>();
-      List<GroupReference> matches = Lists.newArrayListWithCapacity(MAX);
-      String a = name;
-      String b = end(a);
-      try (ReviewDb db = schemaFactory.open()) {
-        if (name.matches(ACCOUNT_ID_PATTERN)) {
-          Account.Id id = new Account.Id(Integer.parseInt(name));
-          if (db.accounts().get(id) != null) {
-            add(matches, ids, ctl, id);
-            return matches;
-          }
-        }
-
-        if (name.matches(Account.USER_NAME_PATTERN)) {
-          for (AccountExternalId e : db.accountExternalIds().suggestByKey(
-              new AccountExternalId.Key(AccountExternalId.SCHEME_USERNAME + a),
-              new AccountExternalId.Key(AccountExternalId.SCHEME_USERNAME + b),
-              MAX)) {
-            if (!e.getSchemeRest().startsWith(a)) {
-              break;
-            }
-            add(matches, ids, ctl, e.getAccountId());
-          }
-        }
-
-        for (Account p : db.accounts().suggestByFullName(a, b, MAX)) {
-          if (!p.getFullName().startsWith(a)) {
-            break;
-          }
-          add(matches, ids, ctl, p.getId());
-        }
-
-        for (Account p : db.accounts().suggestByPreferredEmail(a, b, MAX)) {
-          if (!p.getPreferredEmail().startsWith(a)) {
-            break;
-          }
-          add(matches, ids, ctl, p.getId());
-        }
-
-        for (AccountExternalId e : db.accountExternalIds()
-            .suggestByEmailAddress(a, b, MAX)) {
-          if (!e.getEmailAddress().startsWith(a)) {
-            break;
-          }
-          add(matches, ids, ctl, e.getAccountId());
-        }
-
-        return matches;
-      }
-    } catch (OrmException err) {
-      log.warn("Cannot suggest users", err);
-      return Collections.emptyList();
-    }
-  }
-
-  private static String end(String a) {
-    char next = (char) (a.charAt(a.length() - 1) + 1);
-    return a.substring(0, a.length() - 1) + next;
-  }
-
-  private void add(List<GroupReference> matches, Set<Account.Id> ids,
-      AccountControl ctl, Account.Id id) {
-    if (!ids.add(id) || !ctl.canSee(id)) {
-      return;
-    }
-
-    AccountState state = accountCache.get(id);
-    if (state == null) {
-      return;
-    }
-
-    AccountGroup.UUID uuid;
-    if (state.getUserName() != null) {
-      uuid = uuid(state.getUserName());
-    } else {
-      uuid = uuid(id);
-    }
-    matches.add(new GroupReference(uuid, nameOf(uuid, state)));
   }
 
   private static String username(AccountGroup.UUID uuid) {
