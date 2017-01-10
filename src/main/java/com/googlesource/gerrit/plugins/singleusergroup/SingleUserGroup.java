@@ -41,23 +41,20 @@ import com.google.gwtorm.server.OrmException;
 import com.google.inject.AbstractModule;
 import com.google.inject.Inject;
 import com.google.inject.Singleton;
-
+import java.util.Collection;
+import java.util.Collections;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.util.Collection;
-import java.util.Collections;
-
 /**
  * Makes a group out of each user.
- * <p>
- * UUIDs for the groups are derived from the unique username attached to the
- * account. A user can only be used as a group if it has a username.
+ *
+ * <p>UUIDs for the groups are derived from the unique username attached to the account. A user can
+ * only be used as a group if it has a username.
  */
 @Singleton
 public class SingleUserGroup extends AbstractGroupBackend {
-  private static final Logger log =
-      LoggerFactory.getLogger(SingleUserGroup.class);
+  private static final Logger log = LoggerFactory.getLogger(SingleUserGroup.class);
 
   private static final String UUID_PREFIX = "user:";
   private static final String NAME_PREFIX = "user/";
@@ -77,7 +74,8 @@ public class SingleUserGroup extends AbstractGroupBackend {
   private final AccountQueryProcessor queryProcessor;
 
   @Inject
-  SingleUserGroup(AccountCache accountCache,
+  SingleUserGroup(
+      AccountCache accountCache,
       AccountQueryBuilder queryBuilder,
       AccountQueryProcessor queryProcessor) {
     this.accountCache = accountCache;
@@ -113,8 +111,7 @@ public class SingleUserGroup extends AbstractGroupBackend {
     }
     if (state != null) {
       final String name = nameOf(uuid, state);
-      final String email =
-          Strings.emptyToNull(state.getAccount().getPreferredEmail());
+      final String email = Strings.emptyToNull(state.getAccount().getPreferredEmail());
       return new GroupDescription.Basic() {
         @Override
         public AccountGroup.UUID getGroupUUID() {
@@ -143,27 +140,22 @@ public class SingleUserGroup extends AbstractGroupBackend {
   }
 
   @Override
-  public Collection<GroupReference> suggest(
-      String name,
-      @Nullable ProjectControl project) {
+  public Collection<GroupReference> suggest(String name, @Nullable ProjectControl project) {
     try {
-      return Lists
-          .transform(
-              queryProcessor
-                  .setLimit(MAX)
-                  .query(queryBuilder.defaultQuery(name)).entities(),
-              new Function<AccountState, GroupReference>() {
-                @Override
-                public GroupReference apply(AccountState state) {
-                  AccountGroup.UUID uuid;
-                  if (state.getUserName() != null) {
-                    uuid = uuid(state.getUserName());
-                  } else {
-                    uuid = uuid(state.getAccount().getId());
-                  }
-                  return new GroupReference(uuid, nameOf(uuid, state));
-                }
-              });
+      return Lists.transform(
+          queryProcessor.setLimit(MAX).query(queryBuilder.defaultQuery(name)).entities(),
+          new Function<AccountState, GroupReference>() {
+            @Override
+            public GroupReference apply(AccountState state) {
+              AccountGroup.UUID uuid;
+              if (state.getUserName() != null) {
+                uuid = uuid(state.getUserName());
+              } else {
+                uuid = uuid(state.getAccount().getId());
+              }
+              return new GroupReference(uuid, nameOf(uuid, state));
+            }
+          });
     } catch (OrmException | QueryParseException err) {
       log.warn("Cannot suggest users", err);
       return Collections.emptyList();
@@ -185,8 +177,7 @@ public class SingleUserGroup extends AbstractGroupBackend {
 
   private static void checkUUID(AccountGroup.UUID uuid) {
     checkArgument(
-      uuid.get().startsWith(UUID_PREFIX),
-      "SingleUserGroup does not handle %s", uuid.get());
+        uuid.get().startsWith(UUID_PREFIX), "SingleUserGroup does not handle %s", uuid.get());
   }
 
   private static String nameOf(AccountGroup.UUID uuid, AccountState account) {
