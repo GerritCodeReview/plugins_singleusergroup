@@ -89,7 +89,7 @@ public class SingleUserGroup extends AbstractGroupBackend {
   }
 
   @Override
-  public GroupMembership membershipsOf(final IdentifiedUser user) {
+  public GroupMembership membershipsOf(IdentifiedUser user) {
     ImmutableList.Builder<AccountGroup.UUID> groups = ImmutableList.builder();
     groups.add(uuid(user.getAccountId()));
     if (user.getUserName() != null) {
@@ -99,7 +99,7 @@ public class SingleUserGroup extends AbstractGroupBackend {
   }
 
   @Override
-  public GroupDescription.Basic get(final AccountGroup.UUID uuid) {
+  public GroupDescription.Basic get(AccountGroup.UUID uuid) {
     String ident = username(uuid);
     AccountState state;
     if (ident.matches(ACCOUNT_ID_PATTERN)) {
