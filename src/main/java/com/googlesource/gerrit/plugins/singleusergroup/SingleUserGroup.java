@@ -35,6 +35,7 @@ import com.google.gerrit.server.account.GroupMembership;
 import com.google.gerrit.server.account.ListGroupMembership;
 import com.google.gerrit.server.project.ProjectControl;
 import com.google.gerrit.server.query.QueryParseException;
+import com.google.gerrit.server.query.account.AccountPredicates;
 import com.google.gerrit.server.query.account.AccountQueryBuilder;
 import com.google.gerrit.server.query.account.AccountQueryProcessor;
 import com.google.gwtorm.server.OrmException;
@@ -143,7 +144,10 @@ public class SingleUserGroup extends AbstractGroupBackend {
   public Collection<GroupReference> suggest(String name, @Nullable ProjectControl project) {
     try {
       return Lists.transform(
-          queryProcessor.setLimit(MAX).query(queryBuilder.defaultQuery(name)).entities(),
+          queryProcessor
+              .setLimit(MAX)
+              .query(AccountPredicates.andActive(queryBuilder.defaultQuery(name)))
+              .entities(),
           new Function<AccountState, GroupReference>() {
             @Override
             public GroupReference apply(AccountState state) {
