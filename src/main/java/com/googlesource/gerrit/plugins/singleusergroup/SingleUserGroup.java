@@ -41,6 +41,7 @@ import com.google.gerrit.server.query.account.AccountQueryProcessor;
 import com.google.gwtorm.server.OrmException;
 import com.google.inject.AbstractModule;
 import com.google.inject.Inject;
+import com.google.inject.Provider;
 import com.google.inject.Singleton;
 import java.util.Collection;
 import java.util.Collections;
@@ -72,16 +73,16 @@ public class SingleUserGroup extends AbstractGroupBackend {
 
   private final AccountCache accountCache;
   private final AccountQueryBuilder queryBuilder;
-  private final AccountQueryProcessor queryProcessor;
+  private final Provider<AccountQueryProcessor> queryProvider;
 
   @Inject
   SingleUserGroup(
       AccountCache accountCache,
       AccountQueryBuilder queryBuilder,
-      AccountQueryProcessor queryProcessor) {
+      Provider<AccountQueryProcessor> queryProvider) {
     this.accountCache = accountCache;
     this.queryBuilder = queryBuilder;
-    this.queryProcessor = queryProcessor;
+    this.queryProvider = queryProvider;
   }
 
   @Override
@@ -144,7 +145,8 @@ public class SingleUserGroup extends AbstractGroupBackend {
   public Collection<GroupReference> suggest(String name, @Nullable ProjectControl project) {
     try {
       return Lists.transform(
-          queryProcessor
+          queryProvider
+              .get()
               .setLimit(MAX)
               .query(AccountPredicates.andActive(queryBuilder.defaultQuery(name)))
               .entities(),
