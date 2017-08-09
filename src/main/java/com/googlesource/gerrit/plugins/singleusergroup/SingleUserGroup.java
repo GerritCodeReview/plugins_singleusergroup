@@ -147,7 +147,7 @@ public class SingleUserGroup extends AbstractGroupBackend {
       return Lists.transform(
           queryProvider
               .get()
-              .setLimit(MAX)
+              .setUserProvidedLimit(MAX)
               .query(AccountPredicates.andActive(queryBuilder.defaultQuery(name)))
               .entities(),
           new Function<AccountState, GroupReference>() {
