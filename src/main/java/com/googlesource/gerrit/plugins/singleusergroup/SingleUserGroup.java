@@ -15,6 +15,7 @@
 package com.googlesource.gerrit.plugins.singleusergroup;
 
 import static com.google.common.base.Preconditions.checkArgument;
+import static com.google.gerrit.server.account.externalids.ExternalId.SCHEME_USERNAME;
 
 import com.google.common.base.Function;
 import com.google.common.base.Strings;
@@ -34,6 +35,8 @@ import com.google.gerrit.server.account.AccountState;
 import com.google.gerrit.server.account.GroupBackend;
 import com.google.gerrit.server.account.GroupMembership;
 import com.google.gerrit.server.account.ListGroupMembership;
+import com.google.gerrit.server.account.externalids.ExternalId;
+import com.google.gerrit.server.account.externalids.ExternalIds;
 import com.google.gerrit.server.project.ProjectControl;
 import com.google.gerrit.server.query.account.AccountPredicates;
 import com.google.gerrit.server.query.account.AccountQueryBuilder;
@@ -43,8 +46,10 @@ import com.google.inject.AbstractModule;
 import com.google.inject.Inject;
 import com.google.inject.Provider;
 import com.google.inject.Singleton;
+import java.io.IOException;
 import java.util.Collection;
 import java.util.Collections;
+import org.eclipse.jgit.errors.ConfigInvalidException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -74,15 +79,18 @@ public class SingleUserGroup extends AbstractGroupBackend {
   private final AccountCache accountCache;
   private final AccountQueryBuilder queryBuilder;
   private final Provider<AccountQueryProcessor> queryProvider;
+  private final ExternalIds externalIds;
 
   @Inject
   SingleUserGroup(
       AccountCache accountCache,
       AccountQueryBuilder queryBuilder,
-      Provider<AccountQueryProcessor> queryProvider) {
+      Provider<AccountQueryProcessor> queryProvider,
+      ExternalIds externalIds) {
     this.accountCache = accountCache;
     this.queryBuilder = queryBuilder;
     this.queryProvider = queryProvider;
+    this.externalIds = externalIds;
   }
 
   @Override
@@ -107,7 +115,17 @@ public class SingleUserGroup extends AbstractGroupBackend {
     if (ident.matches(ACCOUNT_ID_PATTERN)) {
       state = accountCache.get(new Account.Id(Integer.parseInt(ident)));
     } else if (ident.matches(Account.USER_NAME_PATTERN)) {
-      state = accountCache.getByUsername(ident);
+      ExternalId.Key extIdKey = ExternalId.Key.create(SCHEME_USERNAME, ident);
+      try {
+        ExternalId extId = externalIds.get(extIdKey);
+        if (extId == null) {
+          return null;
+        }
+        state = accountCache.get(extId.accountId());
+      } catch (IOException | ConfigInvalidException e) {
+        log.error(String.format("Failed to read external ID %s", extIdKey), e);
+        return null;
+      }
     } else {
       return null;
     }
