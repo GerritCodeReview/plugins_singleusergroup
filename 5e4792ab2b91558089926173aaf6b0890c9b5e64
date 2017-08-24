@@ -17,6 +17,24 @@
       "revId": "5e4792ab2b91558089926173aaf6b0890c9b5e64",
       "serverId": "173816e5-2b9a-37c3-8a2e-48639d4f1153",
       "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "70d867b8_492d95e6",
+        "filename": "src/main/java/com/googlesource/gerrit/plugins/singleusergroup/SingleUserGroup.java",
+        "patchSetId": 1
+      },
+      "lineNbr": 118,
+      "author": {
+        "id": 1003935
+      },
+      "writtenOn": "2017-08-24T13:54:00Z",
+      "side": 1,
+      "message": "Sure this can be done if you think it\u0027s cleaner.",
+      "parentUuid": "be010dd3_6623ea80",
+      "revId": "5e4792ab2b91558089926173aaf6b0890c9b5e64",
+      "serverId": "173816e5-2b9a-37c3-8a2e-48639d4f1153",
+      "unresolved": true
     }
   ]
 }
