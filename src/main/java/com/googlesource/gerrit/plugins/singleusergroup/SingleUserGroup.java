@@ -35,6 +35,7 @@ import com.google.gerrit.server.account.GroupBackend;
 import com.google.gerrit.server.account.GroupMembership;
 import com.google.gerrit.server.account.ListGroupMembership;
 import com.google.gerrit.server.project.ProjectControl;
+import com.google.gerrit.server.project.ProjectState;
 import com.google.gerrit.server.query.account.AccountPredicates;
 import com.google.gerrit.server.query.account.AccountQueryBuilder;
 import com.google.gerrit.server.query.account.AccountQueryProcessor;
@@ -142,7 +143,7 @@ public class SingleUserGroup extends AbstractGroupBackend {
   }
 
   @Override
-  public Collection<GroupReference> suggest(String name, @Nullable ProjectControl project) {
+  public Collection<GroupReference> suggest(String name, @Nullable ProjectState project) {
     try {
       return Lists.transform(
           queryProvider
