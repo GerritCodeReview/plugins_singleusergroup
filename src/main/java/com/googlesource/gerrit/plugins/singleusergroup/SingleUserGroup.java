@@ -35,6 +35,7 @@ import com.google.gerrit.server.account.GroupBackend;
 import com.google.gerrit.server.account.GroupMembership;
 import com.google.gerrit.server.account.ListGroupMembership;
 import com.google.gerrit.server.project.ProjectState;
+import com.google.gerrit.server.query.PredicateParser;
 import com.google.gerrit.server.query.account.AccountPredicates;
 import com.google.gerrit.server.query.account.AccountQueryBuilder;
 import com.google.gerrit.server.query.account.AccountQueryProcessor;
@@ -72,7 +73,7 @@ public class SingleUserGroup extends AbstractGroupBackend {
   }
 
   private final AccountCache accountCache;
-  private final AccountQueryBuilder queryBuilder;
+  private final PredicateParser<AccountState> queryBuilder;
   private final Provider<AccountQueryProcessor> queryProvider;
 
   @Inject
