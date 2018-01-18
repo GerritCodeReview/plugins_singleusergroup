@@ -45,6 +45,7 @@ import com.google.inject.Provider;
 import com.google.inject.Singleton;
 import java.util.Collection;
 import java.util.Collections;
+import java.util.Optional;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -103,17 +104,17 @@ public class SingleUserGroup extends AbstractGroupBackend {
   @Override
   public GroupDescription.Basic get(AccountGroup.UUID uuid) {
     String ident = username(uuid);
-    AccountState state;
+    Optional<AccountState> state;
     if (ident.matches(ACCOUNT_ID_PATTERN)) {
-      state = accountCache.get(new Account.Id(Integer.parseInt(ident)));
+      state = Optional.of(accountCache.get(new Account.Id(Integer.parseInt(ident))));
     } else if (ident.matches(Account.USER_NAME_PATTERN)) {
       state = accountCache.getByUsername(ident);
     } else {
       return null;
     }
-    if (state != null) {
-      final String name = nameOf(uuid, state);
-      final String email = Strings.emptyToNull(state.getAccount().getPreferredEmail());
+    if (state.isPresent()) {
+      String name = nameOf(uuid, state.get());
+      String email = Strings.emptyToNull(state.get().getAccount().getPreferredEmail());
       return new GroupDescription.Basic() {
         @Override
         public AccountGroup.UUID getGroupUUID() {
