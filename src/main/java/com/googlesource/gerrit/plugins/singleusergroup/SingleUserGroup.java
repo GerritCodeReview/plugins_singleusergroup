@@ -95,8 +95,8 @@ public class SingleUserGroup extends AbstractGroupBackend {
   public GroupMembership membershipsOf(IdentifiedUser user) {
     ImmutableList.Builder<AccountGroup.UUID> groups = ImmutableList.builder();
     groups.add(uuid(user.getAccountId()));
-    if (user.getUserName() != null) {
-      groups.add(uuid(user.getUserName()));
+    if (user.getUserName().isPresent()) {
+      groups.add(uuid(user.getUserName().get()));
     }
     return new ListGroupMembership(groups.build());
   }
