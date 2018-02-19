@@ -15,11 +15,10 @@
 package com.googlesource.gerrit.plugins.singleusergroup;
 
 import static com.google.common.base.Preconditions.checkArgument;
+import static java.util.stream.Collectors.toList;
 
-import com.google.common.base.Function;
 import com.google.common.base.Strings;
 import com.google.common.collect.ImmutableList;
-import com.google.common.collect.Lists;
 import com.google.gerrit.common.Nullable;
 import com.google.gerrit.common.data.GroupDescription;
 import com.google.gerrit.common.data.GroupReference;
@@ -146,28 +145,24 @@ public class SingleUserGroup extends AbstractGroupBackend {
   @Override
   public Collection<GroupReference> suggest(String name, @Nullable ProjectState project) {
     try {
-      return Lists.transform(
-          queryProvider
-              .get()
-              .setUserProvidedLimit(MAX)
-              .query(AccountPredicates.andActive(queryBuilder.defaultQuery(name)))
-              .entities(),
-          new Function<AccountState, GroupReference>() {
-            @Override
-            public GroupReference apply(AccountState state) {
-              AccountGroup.UUID uuid;
-              if (state.getUserName().isPresent()) {
-                uuid = uuid(state.getUserName().get());
-              } else {
-                uuid = uuid(state.getAccount().getId());
-              }
-              return new GroupReference(uuid, nameOf(uuid, state));
-            }
-          });
+      return queryProvider
+          .get()
+          .setUserProvidedLimit(MAX)
+          .query(AccountPredicates.andActive(queryBuilder.defaultQuery(name)))
+          .entities()
+          .stream()
+          .map(SingleUserGroup::accountToGroup)
+          .collect(toList());
     } catch (OrmException | QueryParseException err) {
       log.warn("Cannot suggest users", err);
       return Collections.emptyList();
     }
+  }
+
+  private static GroupReference accountToGroup(AccountState s) {
+    AccountGroup.UUID uuid =
+        uuid(s.getUserName().isPresent() ? s.getUserName().get() : uuid(s.getAccount().getId()));
+    return new GroupReference(uuid, nameOf(uuid, s));
   }
 
   private static String username(AccountGroup.UUID uuid) {
