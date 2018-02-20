@@ -1,0 +1,27 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "3b167e41_f9de1f89",
+        "filename": "src/main/java/com/googlesource/gerrit/plugins/singleusergroup/SingleUserGroup.java",
+        "patchSetId": 1
+      },
+      "lineNbr": 168,
+      "author": {
+        "id": 1011123
+      },
+      "writtenOn": "2018-02-20T00:37:28Z",
+      "side": 1,
+      "message": "Optional: this could be done with a ternary statement.",
+      "range": {
+        "startLine": 163,
+        "startChar": 4,
+        "endLine": 168,
+        "endChar": 5
+      },
+      "revId": "0d36cbd564d0efd7f698a6b2aa939165b5f70fcc",
+      "serverId": "173816e5-2b9a-37c3-8a2e-48639d4f1153",
+      "unresolved": true
+    }
+  ]
+}
