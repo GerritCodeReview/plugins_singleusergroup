@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "b0eb29b8_d2365d64",
+        "filename": "src/main/java/com/googlesource/gerrit/plugins/singleusergroup/SingleUserGroup.java",
+        "patchSetId": 4
+      },
+      "lineNbr": 162,
+      "author": {
+        "id": 1013267
+      },
+      "writtenOn": "2018-02-20T18:43:53Z",
+      "side": 1,
+      "message": "my java is a bit behind the times, but couldn\u0027t this have been kept as an anonymous function?",
+      "revId": "ebb26f549e7b8d072739b31a6b6387fbb89c34f3",
+      "serverId": "173816e5-2b9a-37c3-8a2e-48639d4f1153",
+      "unresolved": true
+    }
+  ]
+}
