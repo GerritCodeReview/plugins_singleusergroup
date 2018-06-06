@@ -19,6 +19,7 @@ import static java.util.stream.Collectors.toList;
 
 import com.google.common.base.Strings;
 import com.google.common.collect.ImmutableList;
+import com.google.common.flogger.FluentLogger;
 import com.google.gerrit.common.Nullable;
 import com.google.gerrit.common.data.GroupDescription;
 import com.google.gerrit.common.data.GroupReference;
@@ -46,8 +47,6 @@ import com.google.inject.Singleton;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.Optional;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 /**
  * Makes a group out of each user.
@@ -57,7 +56,7 @@ import org.slf4j.LoggerFactory;
  */
 @Singleton
 public class SingleUserGroup extends AbstractGroupBackend {
-  private static final Logger log = LoggerFactory.getLogger(SingleUserGroup.class);
+  private static final FluentLogger logger = FluentLogger.forEnclosingClass();
 
   private static final String UUID_PREFIX = "user:";
   private static final String NAME_PREFIX = "user/";
@@ -154,7 +153,7 @@ public class SingleUserGroup extends AbstractGroupBackend {
           .map(SingleUserGroup::accountToGroup)
           .collect(toList());
     } catch (OrmException | QueryParseException err) {
-      log.warn("Cannot suggest users", err);
+      logger.atWarning().withCause(err).log("Cannot suggest users");
       return Collections.emptyList();
     }
   }
