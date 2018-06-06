@@ -25,9 +25,8 @@ import org.junit.Test;
 
 @NoHttpd
 @TestPlugin(
-  name = "singleusergroup",
-  sysModule = "com.googlesource.gerrit.plugins.singleusergroup.SingleUserGroup$Module"
-)
+    name = "singleusergroup",
+    sysModule = "com.googlesource.gerrit.plugins.singleusergroup.SingleUserGroup$Module")
 public class SingleUserGroupTest extends LightweightPluginDaemonTest {
   @Test
   public void testSuggestion() throws Exception {
