@@ -34,6 +34,7 @@ import com.google.gerrit.server.account.AccountState;
 import com.google.gerrit.server.account.GroupBackend;
 import com.google.gerrit.server.account.GroupMembership;
 import com.google.gerrit.server.account.ListGroupMembership;
+import com.google.gerrit.server.account.externalids.ExternalId;
 import com.google.gerrit.server.project.ProjectState;
 import com.google.gerrit.server.query.account.AccountPredicates;
 import com.google.gerrit.server.query.account.AccountQueryBuilder;
@@ -106,7 +107,7 @@ public class SingleUserGroup extends AbstractGroupBackend {
     AccountState state;
     if (ident.matches(ACCOUNT_ID_PATTERN)) {
       state = accountCache.get(new Account.Id(Integer.parseInt(ident)));
-    } else if (ident.matches(Account.USER_NAME_PATTERN)) {
+    } else if (ExternalId.isValidUsername(ident)) {
       state = accountCache.getByUsername(ident);
     } else {
       return null;
