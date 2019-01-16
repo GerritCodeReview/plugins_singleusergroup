@@ -23,6 +23,7 @@ import com.google.common.flogger.FluentLogger;
 import com.google.gerrit.common.Nullable;
 import com.google.gerrit.common.data.GroupDescription;
 import com.google.gerrit.common.data.GroupReference;
+import com.google.gerrit.exceptions.StorageException;
 import com.google.gerrit.extensions.registration.DynamicSet;
 import com.google.gerrit.index.query.QueryParseException;
 import com.google.gerrit.reviewdb.client.Account;
@@ -39,7 +40,6 @@ import com.google.gerrit.server.project.ProjectState;
 import com.google.gerrit.server.query.account.AccountPredicates;
 import com.google.gerrit.server.query.account.AccountQueryBuilder;
 import com.google.gerrit.server.query.account.AccountQueryProcessor;
-import com.google.gwtorm.server.OrmException;
 import com.google.inject.AbstractModule;
 import com.google.inject.Inject;
 import com.google.inject.Provider;
@@ -148,7 +148,7 @@ public class SingleUserGroup extends AbstractGroupBackend {
           .query(AccountPredicates.andActive(queryBuilder.defaultQuery(name))).entities().stream()
           .map(SingleUserGroup::accountToGroup)
           .collect(toList());
-    } catch (OrmException | QueryParseException err) {
+    } catch (StorageException | QueryParseException err) {
       logger.atWarning().withCause(err).log("Cannot suggest users");
       return Collections.emptyList();
     }
