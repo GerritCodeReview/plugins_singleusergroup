@@ -23,7 +23,7 @@ import com.google.common.flogger.FluentLogger;
 import com.google.gerrit.common.Nullable;
 import com.google.gerrit.common.data.GroupDescription;
 import com.google.gerrit.common.data.GroupReference;
-import com.google.gerrit.exceptions.OrmException;
+import com.google.gerrit.exceptions.StorageException;
 import com.google.gerrit.extensions.registration.DynamicSet;
 import com.google.gerrit.index.query.QueryParseException;
 import com.google.gerrit.reviewdb.client.Account;
@@ -152,7 +152,7 @@ public class SingleUserGroup extends AbstractGroupBackend {
           .stream()
           .map(SingleUserGroup::accountToGroup)
           .collect(toList());
-    } catch (OrmException | QueryParseException err) {
+    } catch (StorageException | QueryParseException err) {
       logger.atWarning().withCause(err).log("Cannot suggest users");
       return Collections.emptyList();
     }
