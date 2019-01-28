@@ -144,12 +144,8 @@ public class SingleUserGroup extends AbstractGroupBackend {
   @Override
   public Collection<GroupReference> suggest(String name, @Nullable ProjectState project) {
     try {
-      return queryProvider
-          .get()
-          .setUserProvidedLimit(MAX)
-          .query(AccountPredicates.andActive(queryBuilder.defaultQuery(name)))
-          .entities()
-          .stream()
+      return queryProvider.get().setUserProvidedLimit(MAX)
+          .query(AccountPredicates.andActive(queryBuilder.defaultQuery(name))).entities().stream()
           .map(SingleUserGroup::accountToGroup)
           .collect(toList());
     } catch (OrmException | QueryParseException err) {
