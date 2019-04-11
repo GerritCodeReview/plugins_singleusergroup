@@ -35,7 +35,7 @@ public class SingleUserGroupTest extends LightweightPluginDaemonTest {
   @Test
   public void testSuggestion() throws Exception {
     // No ability to modify account and therefore no ACL to see secondary email
-    requestScopeOperations.setApiUser(user.getId());
+    requestScopeOperations.setApiUser(user.id());
     Map<String, GroupInfo> groups = gApi.groups().list().withSuggest("adm").getAsMap();
     assertThat(groups).containsKey("user/Administrator (admin)");
   }
