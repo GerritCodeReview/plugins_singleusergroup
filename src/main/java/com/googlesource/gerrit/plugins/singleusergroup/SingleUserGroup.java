@@ -105,7 +105,7 @@ public class SingleUserGroup extends AbstractGroupBackend {
     String ident = username(uuid);
     Optional<AccountState> state;
     if (ident.matches(ACCOUNT_ID_PATTERN)) {
-      state = accountCache.get(new Account.Id(Integer.parseInt(ident)));
+      state = accountCache.get(Account.id(Integer.parseInt(ident)));
     } else if (ExternalId.isValidUsername(ident)) {
       state = accountCache.getByUsername(ident);
     } else {
