@@ -170,7 +170,7 @@ public class SingleUserGroup extends AbstractGroupBackend {
   }
 
   private static AccountGroup.UUID uuid(String username) {
-    return new AccountGroup.UUID(UUID_PREFIX + username);
+    return AccountGroup.uuid(UUID_PREFIX + username);
   }
 
   private static void checkUUID(AccountGroup.UUID uuid) {
