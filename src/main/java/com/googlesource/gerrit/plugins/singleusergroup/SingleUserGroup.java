@@ -113,7 +113,7 @@ public class SingleUserGroup extends AbstractGroupBackend {
     }
     if (state.isPresent()) {
       String name = nameOf(uuid, state.get());
-      String email = Strings.emptyToNull(state.get().getAccount().getPreferredEmail());
+      String email = Strings.emptyToNull(state.get().getAccount().preferredEmail());
       return new GroupDescription.Basic() {
         @Override
         public AccountGroup.UUID getGroupUUID() {
@@ -156,7 +156,7 @@ public class SingleUserGroup extends AbstractGroupBackend {
 
   private static GroupReference accountToGroup(AccountState s) {
     AccountGroup.UUID uuid =
-        s.getUserName().isPresent() ? uuid(s.getUserName().get()) : uuid(s.getAccount().getId());
+        s.getUserName().isPresent() ? uuid(s.getUserName().get()) : uuid(s.getAccount().id());
     return new GroupReference(uuid, nameOf(uuid, s));
   }
 
@@ -180,8 +180,8 @@ public class SingleUserGroup extends AbstractGroupBackend {
 
   private static String nameOf(AccountGroup.UUID uuid, AccountState accountState) {
     StringBuilder buf = new StringBuilder();
-    if (accountState.getAccount().getFullName() != null) {
-      buf.append(accountState.getAccount().getFullName());
+    if (accountState.getAccount().fullName() != null) {
+      buf.append(accountState.getAccount().fullName());
     }
     if (accountState.getUserName().isPresent()) {
       if (buf.length() > 0) {
@@ -190,9 +190,9 @@ public class SingleUserGroup extends AbstractGroupBackend {
         buf.append(accountState.getUserName().get());
       }
     } else if (buf.length() > 0) {
-      buf.append(" (").append(accountState.getAccount().getId().get()).append(")");
+      buf.append(" (").append(accountState.getAccount().id().get()).append(")");
     } else {
-      buf.append(accountState.getAccount().getId().get());
+      buf.append(accountState.getAccount().id().get());
     }
 
     String ident = username(uuid);
