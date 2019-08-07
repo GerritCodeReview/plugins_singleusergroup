@@ -113,7 +113,7 @@ public class SingleUserGroup extends AbstractGroupBackend {
     }
     if (state.isPresent()) {
       String name = nameOf(uuid, state.get());
-      String email = Strings.emptyToNull(state.get().getAccount().preferredEmail());
+      String email = Strings.emptyToNull(state.get().account().preferredEmail());
       return new GroupDescription.Basic() {
         @Override
         public AccountGroup.UUID getGroupUUID() {
@@ -156,7 +156,7 @@ public class SingleUserGroup extends AbstractGroupBackend {
 
   private static GroupReference accountToGroup(AccountState s) {
     AccountGroup.UUID uuid =
-        s.getUserName().isPresent() ? uuid(s.getUserName().get()) : uuid(s.getAccount().id());
+        s.userName().isPresent() ? uuid(s.userName().get()) : uuid(s.account().id());
     return new GroupReference(uuid, nameOf(uuid, s));
   }
 
@@ -180,19 +180,19 @@ public class SingleUserGroup extends AbstractGroupBackend {
 
   private static String nameOf(AccountGroup.UUID uuid, AccountState accountState) {
     StringBuilder buf = new StringBuilder();
-    if (accountState.getAccount().fullName() != null) {
-      buf.append(accountState.getAccount().fullName());
+    if (accountState.account().fullName() != null) {
+      buf.append(accountState.account().fullName());
     }
-    if (accountState.getUserName().isPresent()) {
+    if (accountState.userName().isPresent()) {
       if (buf.length() > 0) {
-        buf.append(" (").append(accountState.getUserName().get()).append(")");
+        buf.append(" (").append(accountState.userName().get()).append(")");
       } else {
-        buf.append(accountState.getUserName().get());
+        buf.append(accountState.userName().get());
       }
     } else if (buf.length() > 0) {
-      buf.append(" (").append(accountState.getAccount().id().get()).append(")");
+      buf.append(" (").append(accountState.account().id().get()).append(")");
     } else {
-      buf.append(accountState.getAccount().id().get());
+      buf.append(accountState.account().id().get());
     }
 
     String ident = username(uuid);
