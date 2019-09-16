@@ -103,10 +103,11 @@ public class SingleUserGroup extends AbstractGroupBackend {
   @Override
   public GroupDescription.Basic get(AccountGroup.UUID uuid) {
     String ident = username(uuid);
-    Optional<AccountState> state;
+    Optional<AccountState> state = Optional.empty();
     if (ident.matches(ACCOUNT_ID_PATTERN)) {
       state = accountCache.get(Account.id(Integer.parseInt(ident)));
-    } else if (ExternalId.isValidUsername(ident)) {
+    }
+    if (!state.isPresent() && ExternalId.isValidUsername(ident)) {
       state = accountCache.getByUsername(ident);
     } else {
       return null;
