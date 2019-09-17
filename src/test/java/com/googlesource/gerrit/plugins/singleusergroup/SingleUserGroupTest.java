@@ -25,7 +25,6 @@ import com.google.gerrit.common.data.GroupDescription;
 import com.google.gerrit.extensions.common.GroupInfo;
 import com.google.gerrit.reviewdb.client.AccountGroup;
 import com.google.gerrit.server.IdentifiedUser;
-import com.google.gerrit.server.account.GroupBackend;
 import com.google.inject.Inject;
 import java.util.Map;
 import org.junit.Test;
@@ -36,8 +35,6 @@ import org.junit.Test;
     sysModule = "com.googlesource.gerrit.plugins.singleusergroup.SingleUserGroup$Module")
 public class SingleUserGroupTest extends LightweightPluginDaemonTest {
   @Inject private RequestScopeOperations requestScopeOperations;
-
-  @Inject private GroupBackend groupBackend;
 
   @Test
   public void testSuggestion() throws Exception {
