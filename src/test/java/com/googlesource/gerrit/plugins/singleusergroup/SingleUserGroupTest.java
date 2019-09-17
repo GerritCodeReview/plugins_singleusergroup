@@ -24,8 +24,6 @@ import com.google.gerrit.common.data.GroupDescription;
 import com.google.gerrit.extensions.common.GroupInfo;
 import com.google.gerrit.reviewdb.client.AccountGroup;
 import com.google.gerrit.server.IdentifiedUser;
-import com.google.gerrit.server.account.GroupBackend;
-import com.google.inject.Inject;
 import java.util.Map;
 import org.junit.Test;
 
@@ -34,8 +32,6 @@ import org.junit.Test;
     name = "singleusergroup",
     sysModule = "com.googlesource.gerrit.plugins.singleusergroup.SingleUserGroup$Module")
 public class SingleUserGroupTest extends LightweightPluginDaemonTest {
-  @Inject private GroupBackend groupBackend;
-
   @Test
   public void testSuggestion() throws Exception {
     // No ability to modify account and therefore no ACL to see secondary email
