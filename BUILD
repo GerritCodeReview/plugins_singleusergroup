@@ -16,7 +16,6 @@ junit_tests(
     srcs = glob(["src/test/java/**/*Test.java"]),
     tags = ["replication"],
     visibility = ["//visibility:public"],
-    deps = PLUGIN_TEST_DEPS + PLUGIN_DEPS + [
-        ":singleusergroup__plugin",
-    ],
+    runtime_deps = [":singleusergroup__plugin"],
+    deps = PLUGIN_TEST_DEPS + PLUGIN_DEPS,
 )
