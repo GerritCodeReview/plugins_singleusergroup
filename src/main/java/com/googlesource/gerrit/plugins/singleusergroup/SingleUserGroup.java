@@ -158,7 +158,7 @@ public class SingleUserGroup extends AbstractGroupBackend {
   private static GroupReference accountToGroup(AccountState s) {
     AccountGroup.UUID uuid =
         s.userName().isPresent() ? uuid(s.userName().get()) : uuid(s.account().id());
-    return new GroupReference(uuid, nameOf(uuid, s));
+    return GroupReference.create(uuid, nameOf(uuid, s));
   }
 
   private static String username(AccountGroup.UUID uuid) {
