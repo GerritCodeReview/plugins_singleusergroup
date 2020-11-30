@@ -28,6 +28,7 @@ import com.google.gerrit.entities.GroupReference;
 import com.google.gerrit.exceptions.StorageException;
 import com.google.gerrit.extensions.registration.DynamicSet;
 import com.google.gerrit.index.query.QueryParseException;
+import com.google.gerrit.server.CurrentUser;
 import com.google.gerrit.server.IdentifiedUser;
 import com.google.gerrit.server.account.AbstractGroupBackend;
 import com.google.gerrit.server.account.AccountCache;
@@ -91,7 +92,10 @@ public class SingleUserGroup extends AbstractGroupBackend {
   }
 
   @Override
-  public GroupMembership membershipsOf(IdentifiedUser user) {
+  public GroupMembership membershipsOf(CurrentUser user) {
+    if (!user.isIdentifiedUser()) {
+      return GroupMembership.EMPTY;
+    }
     ImmutableList.Builder<AccountGroup.UUID> groups = ImmutableList.builder();
     groups.add(uuid(user.getAccountId()));
     if (user.getUserName().isPresent()) {
