@@ -14,7 +14,7 @@ gerrit_plugin(
 junit_tests(
     name = "singleusergroup_tests",
     srcs = glob(["src/test/java/**/*Test.java"]),
-    tags = ["replication"],
+    tags = ["singleusergroup"],
     visibility = ["//visibility:public"],
     runtime_deps = [":singleusergroup__plugin"],
     deps = PLUGIN_TEST_DEPS + PLUGIN_DEPS,
