@@ -6,7 +6,7 @@ gerrit_plugin(
     srcs = glob(["src/main/java/**/*.java"]),
     manifest_entries = [
         "Gerrit-PluginName: singleusergroup",
-        "Gerrit-Module: com.googlesource.gerrit.plugins.singleusergroup.SingleUserGroup$Module",
+        "Gerrit-Module: com.googlesource.gerrit.plugins.singleusergroup.SingleUserGroup$PluginModule",
     ],
     resources = glob(["src/main/resources/**/*"]),
 )

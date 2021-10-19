@@ -64,7 +64,7 @@ public class SingleUserGroup extends AbstractGroupBackend {
   private static final String ACCOUNT_ID_PATTERN = "[1-9][0-9]*";
   private static final int MAX = 10;
 
-  public static class Module extends AbstractModule {
+  public static class PluginModule extends AbstractModule {
     @Override
     protected void configure() {
       DynamicSet.bind(binder(), GroupBackend.class).to(SingleUserGroup.class);
