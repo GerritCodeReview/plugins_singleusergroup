@@ -103,6 +103,7 @@ public class SingleUserGroup extends AbstractGroupBackend {
     return new ListGroupMembership(groups.build());
   }
 
+  @Nullable
   @Override
   public GroupDescription.Basic get(AccountGroup.UUID uuid) {
     String ident = username(uuid);
