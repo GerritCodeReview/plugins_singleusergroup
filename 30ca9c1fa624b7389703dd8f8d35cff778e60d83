@@ -1,13 +1,9 @@
 {
   "checks": {
     "zuul-check:plugins_singleusergroup": {
-      "state": "FAILED",
-      "message": "Change failed",
-      "url": "https://ci.gerritcodereview.com/t/gerrit/buildset/a095d2e30c634e1eb644ca1a849efb9f",
-      "started": "2021-02-17T09:36:56Z",
-      "finished": "2021-02-17T09:46:38Z",
+      "state": "NOT_STARTED",
       "created": "2021-02-17T09:36:57Z",
-      "updated": "2021-02-17T09:46:38Z"
+      "updated": "2025-10-01T00:01:25Z"
     }
   }
 }
