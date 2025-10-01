@@ -3,7 +3,7 @@
     "zuul-check:plugins_singleusergroup": {
       "state": "NOT_STARTED",
       "created": "2021-02-17T09:36:57Z",
-      "updated": "2025-10-01T00:01:25Z"
+      "updated": "2025-10-01T00:01:44Z"
     }
   }
 }
