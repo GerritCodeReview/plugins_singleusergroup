@@ -16,6 +16,24 @@
       "message": "Unwanted change?",
       "revId": "875a40644743c9439924c9913daf0aa14e6bc547",
       "serverId": "173816e5-2b9a-37c3-8a2e-48639d4f1153"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "afd20510_5e274e79",
+        "filename": "groups",
+        "patchSetId": 2
+      },
+      "lineNbr": 1,
+      "author": {
+        "id": 1072905
+      },
+      "writtenOn": "2025-10-13T10:30:16Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "1e9d809b_0341087c",
+      "revId": "875a40644743c9439924c9913daf0aa14e6bc547",
+      "serverId": "173816e5-2b9a-37c3-8a2e-48639d4f1153"
     }
   ]
 }
