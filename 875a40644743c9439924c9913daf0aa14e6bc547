@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "1e9d809b_0341087c",
+        "filename": "groups",
+        "patchSetId": 2
+      },
+      "lineNbr": 1,
+      "author": {
+        "id": 1006192
+      },
+      "writtenOn": "2025-10-13T10:23:05Z",
+      "side": 1,
+      "message": "Unwanted change?",
+      "revId": "875a40644743c9439924c9913daf0aa14e6bc547",
+      "serverId": "173816e5-2b9a-37c3-8a2e-48639d4f1153"
+    }
+  ]
+}
